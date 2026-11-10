@@ -6,8 +6,8 @@ from datetime import datetime, timezone
 
 PRIORITY_RULES = [
     # (keywords in the description, priority, hours to first response)
-    (("cannot work", "all users", "outage", "ransomware", "security"), "P1", 1),
-    (("vpn", "cannot log in", "email down", "no internet"), "P2", 4),
+    (("cannot work", "all users", "everyone", "whole team", "outage", "ransomware", "security"), "P1", 1),
+    (("vpn", "cannot log in", "cannot login", "locked out", "email is down", "email down", "no internet"), "P2", 4),
     (("slow", "printer", "software install", "update"), "P3", 8),
 ]
 DEFAULT_PRIORITY = ("P4", 24)
@@ -16,7 +16,8 @@ ESCALATE_PRIORITIES = {"P1"}
 
 def triage(description: str) -> tuple[str, int]:
     """Pick a priority and a response target from the wording of the request."""
-    text = description.lower()
+    # "can't log in" and "cant login" are how people really write it, so fold them into "cannot log in"
+    text = description.lower().replace("can't", "cannot").replace("cant ", "cannot ").replace("log in", "login").replace("cannot login", "cannot log in")
     for keywords, priority, hours in PRIORITY_RULES:
         if any(k in text for k in keywords):
             return priority, hours

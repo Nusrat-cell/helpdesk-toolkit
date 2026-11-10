@@ -37,3 +37,12 @@ def test_queue_is_ordered_by_priority():
     log.open_ticket("A", "chat", "Update my software")
     log.open_ticket("B", "phone", "VPN not working")
     assert [r[1] for r in log.open_by_priority()] == ["P2", "P3"]
+
+
+def test_people_do_not_write_cannot_log_in_the_textbook_way():
+    for text in ("I can't log in to my laptop", "cant login after password change", "locked out of my account"):
+        assert triage(text)[0] == "P2"
+
+
+def test_everyone_down_is_not_filed_as_a_normal_ticket():
+    assert triage("Everyone in finance has no internet")[0] == "P1"
